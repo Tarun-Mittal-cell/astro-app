@@ -1,0 +1,26 @@
+Warning: Each child in a list should have a unique &quot;key&quot; prop.
+
+Check the top-level render call using <VIEW>. See https://reactjs.org/link/warning-keys for more information.
+    at VIEW
+    at PDFDownloadLink (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-pdf_renderer.js?v=a9ae5544:100828:5)
+    at div
+    at ChartPDF (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/src/components/astrology/ChartPDF.tsx:601:28)
+    at div
+    at MotionComponent (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=a9ae5544:6536:40)
+    at PresenceChild (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=a9ae5544:7742:24)
+    at AnimatePresence (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=a9ae5544:7800:26)
+    at div
+    at MotionComponent (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=a9ae5544:6536:40)
+    at div
+    at div
+    at div
+    at BirthChartPage (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/src/pages/BirthChart.tsx:57:37)
+    at Route (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=a9ae5544:323:16)
+    at Switch (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=a9ae5544:379:17)
+    at Router
+    at main
+    at div
+    at QueryClientProvider (https://609dbd24-3511-45c2-bebf-97b4c68fbaa0-00-8sbt0gihpxt8.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=a9ae5544:2805:3)
+    at App
+Failed to fetch
+Failed to fetch
