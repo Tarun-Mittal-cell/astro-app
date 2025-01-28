@@ -19,8 +19,20 @@ import {
 export function registerRoutes(app: Express): Server {
   // Astrologers
   app.get("/api/astrologers", async (_req, res) => {
-    const result = await db.select().from(astrologers);
-    res.json(result);
+    try {
+      const result = await db.select().from(astrologers);
+      res.json({
+        status: 'success',
+        data: result
+      });
+    } catch (error) {
+      console.error("Error fetching astrologers:", error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to fetch astrologers',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 
   // Horoscopes
@@ -111,15 +123,58 @@ export function registerRoutes(app: Express): Server {
 
   // Products
   app.get("/api/products", async (_req, res) => {
-    const result = await db.select().from(products);
-    res.json(result);
+    try {
+      const result = await db.select().from(products);
+      res.json({
+        status: 'success',
+        data: result
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to fetch products',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 
   // Bookings
   app.post("/api/bookings", async (req, res) => {
-    const booking = req.body;
-    const result = await db.insert(bookings).values(booking);
-    res.json(result);
+    try {
+      // Validate required fields
+      const requiredFields = ['userId', 'astrologerId', 'date', 'time'];
+      const missingFields = requiredFields.filter(field => !req.body[field]);
+      
+      if (missingFields.length > 0) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Missing required fields',
+          details: `Missing: ${missingFields.join(', ')}`
+        });
+      }
+
+      const booking = req.body;
+      const result = await db.insert(bookings)
+        .values({
+          ...booking,
+          status: 'pending',
+          createdAt: new Date()
+        })
+        .returning();
+
+      res.json({
+        status: 'success',
+        data: result[0]
+      });
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to create booking',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 
   // Birth Charts
@@ -185,22 +240,48 @@ export function registerRoutes(app: Express): Server {
 
   app.get("/api/birth-charts/:id", async (req, res) => {
     try {
+      const chartId = parseInt(req.params.id);
+      
+      if (isNaN(chartId)) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Invalid chart ID',
+          details: 'Chart ID must be a number'
+        });
+      }
+
       const chart = await db.select()
         .from(birthCharts)
-        .where(eq(birthCharts.id, parseInt(req.params.id)))
+        .where(eq(birthCharts.id, chartId))
         .limit(1);
 
       if (!chart.length) {
-        return res.status(404).json({ error: "Birth chart not found" });
+        return res.status(404).json({
+          status: 'error',
+          message: 'Birth chart not found',
+          details: `No chart found with ID: ${chartId}`
+        });
       }
 
       const positions = await db.select()
         .from(planetaryPositions)
         .where(eq(planetaryPositions.birthChartId, chart[0].id));
 
-      res.json({ chart: chart[0], positions });
+      res.json({
+        status: 'success',
+        data: {
+          chart: chart[0],
+          positions,
+          timestamp: new Date().toISOString()
+        }
+      });
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch birth chart" });
+      console.error("Error fetching birth chart:", error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to fetch birth chart',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
