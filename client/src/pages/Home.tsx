@@ -13,10 +13,25 @@ import FeatureCard from "@/components/home/FeatureCard";
 import TestimonialCard from "@/components/home/TestimonialCard";
 import QuickAccessTool from "@/components/home/QuickAccessTool";
 
-const fadeIn = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 }
+const animations = {
+  fadeIn: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: "easeOut" }
+  },
+  slideIn: {
+    initial: { opacity: 0, x: -30 },
+    animate: { opacity: 1, x: 0 },
+    transition: { duration: 0.8, ease: "easeOut" }
+  },
+  scaleIn: {
+    initial: { opacity: 0, scale: 0.9 },
+    animate: { opacity: 1, scale: 1 },
+    transition: { duration: 0.7, ease: "easeOut" }
+  },
+  staggerContainer: {
+    animate: { transition: { staggerChildren: 0.1 } }
+  }
 };
 
 const astrologers = [
@@ -138,58 +153,141 @@ export default function Home() {
               className="text-left space-y-6"
               initial="initial"
               animate="animate"
-              variants={fadeIn}
+              variants={animations.staggerContainer}
             >
-              <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent leading-[1.1] tracking-tight">
+              <motion.div variants={animations.slideIn}>
+                <Badge className="bg-purple-100/80 backdrop-blur-sm text-purple-600 hover:bg-purple-100 px-6 py-2.5 text-sm tracking-wide rounded-full inline-flex items-center gap-2 mb-8">
+                  <span className="inline-block w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                  Live Astrologers Available
+                </Badge>
+              </motion.div>
+              
+              <motion.h1 
+                variants={animations.slideIn}
+                className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent leading-[1.1] tracking-tight"
+              >
                 Discover Your
                 <br />
-                Cosmic Path
-              </h1>
-              <h2 className="text-3xl md:text-4xl xl:text-5xl font-medium text-gray-700 tracking-tight">
+                <span className="relative inline-block">
+                  Cosmic Path
+                  <motion.span
+                    className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-[#FF7E1D] rounded-full"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                  />
+                </span>
+              </motion.h1>
+              
+              <motion.h2 
+                variants={animations.slideIn}
+                className="text-3xl md:text-4xl xl:text-5xl font-medium text-gray-700 tracking-tight"
+              >
                 Expert Vedic Guidance & Live Consultations
-              </h2>
-              <p className="text-xl xl:text-2xl text-gray-600 max-w-xl font-medium leading-relaxed">
+              </motion.h2>
+              
+              <motion.p 
+                variants={animations.fadeIn}
+                className="text-xl xl:text-2xl text-gray-600 max-w-xl font-medium leading-relaxed"
+              >
                 Connect with India's most trusted astrologers for personalized predictions and life-changing insights.
-              </p>
+              </motion.p>
 
               {/* Quick Access Tools */}
-              <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
-                {quickTools.map((tool) => (
-                  <QuickAccessTool key={tool.name} tool={tool} />
-                ))}
-              </div>
+              <motion.div 
+                variants={animations.scaleIn}
+                className="mt-12"
+              >
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {quickTools.map((tool, index) => (
+                    <motion.div
+                      key={tool.name}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1, duration: 0.5 }}
+                    >
+                      <QuickAccessTool tool={tool} />
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
 
-              <div className="mt-14 flex flex-col sm:flex-row gap-6">
+              <motion.div 
+                variants={animations.fadeIn}
+                className="mt-14 flex flex-col sm:flex-row gap-6"
+              >
                 <Button asChild size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-[#FF7E1D] hover:opacity-90 text-white px-10 h-16 text-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl">
-                  <Link href="/astrologers">Talk to Astrologer</Link>
+                  className="group bg-gradient-to-r from-purple-600 to-[#FF7E1D] hover:opacity-90 text-white px-10 h-16 text-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl relative overflow-hidden"
+                >
+                  <Link href="/astrologers" className="flex items-center gap-2">
+                    <span>Talk to Astrologer</span>
+                    <motion.span
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="group-hover:translate-x-1 transition-transform"
+                    >
+                      →
+                    </motion.span>
+                  </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline"
-                  className="text-purple-600 hover:bg-purple-50 border-purple-600 border-2 px-10 h-16 text-lg font-medium tracking-wide shadow-md hover:shadow-lg transition-all duration-300 rounded-2xl">
-                  <Link href="/birth-chart">Free Birth Chart</Link>
+                  className="group text-purple-600 hover:bg-purple-50 border-purple-600 border-2 px-10 h-16 text-lg font-medium tracking-wide shadow-md hover:shadow-lg transition-all duration-300 rounded-2xl"
+                >
+                  <Link href="/birth-chart" className="flex items-center gap-2">
+                    <span>Free Birth Chart</span>
+                    <motion.span
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="group-hover:translate-x-1 transition-transform"
+                    >
+                      →
+                    </motion.span>
+                  </Link>
                 </Button>
-              </div>
+              </motion.div>
 
               {/* Trust Indicators */}
-              <div className="mt-16 flex flex-wrap items-center gap-6 text-gray-600">
-                {benefits.map((benefit) => (
-                  <div 
-                    key={benefit.text} 
-                    className="flex items-center gap-3 bg-white/60 hover:bg-white/80 px-5 py-3 rounded-2xl shadow-sm backdrop-blur-sm transition-all duration-300"
-                  >
-                    <div className="text-[#FF7E1D]">{benefit.icon}</div>
-                    <span className="text-sm font-medium tracking-wide">{benefit.text}</span>
-                  </div>
-                ))}
-              </div>
+              <motion.div 
+                variants={animations.fadeIn}
+                className="mt-16"
+              >
+                <div className="flex flex-wrap items-center gap-6 text-gray-600">
+                  {benefits.map((benefit, index) => (
+                    <motion.div
+                      key={benefit.text}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center gap-3 bg-white/60 hover:bg-white/80 px-5 py-3 rounded-2xl shadow-sm backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                    >
+                      <div className="text-[#FF7E1D]">{benefit.icon}</div>
+                      <span className="text-sm font-medium tracking-wide">{benefit.text}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8 }}
-              className="w-full max-w-[min(85vw,42rem)] mx-auto mt-8 lg:mt-0"
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="relative w-full max-w-[min(85vw,42rem)] mx-auto mt-8 lg:mt-0"
             >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-orange-500/20 blur-3xl rounded-full"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
               <EnhancedZodiacWheel />
             </motion.div>
           </div>
@@ -197,87 +295,225 @@ export default function Home() {
       </section>
 
       {/* Featured Astrologers Section */}
-      <section className="py-32 md:py-40 bg-gradient-to-br from-white via-purple-50/50 to-white">
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <section className="relative py-32 md:py-40 bg-gradient-to-br from-white via-purple-50/50 to-white overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-purple-500/5 to-orange-500/5 rounded-full blur-3xl transform rotate-12" />
+          <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-orange-500/5 to-purple-500/5 rounded-full blur-3xl transform -rotate-12" />
+        </div>
+        
+        <div className="relative max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            variants={animations.staggerContainer}
             className="text-center space-y-6 mb-24"
           >
-            <Badge className="bg-purple-100 text-purple-600 hover:bg-purple-100 px-6 py-2 text-sm tracking-wide rounded-full">
-              Expert Astrologers
-            </Badge>
-            <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight">
+            <motion.div variants={animations.fadeIn}>
+              <Badge className="bg-purple-100/80 backdrop-blur-sm text-purple-600 hover:bg-purple-100 px-6 py-2.5 text-sm tracking-wide rounded-full inline-flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                Expert Astrologers
+              </Badge>
+            </motion.div>
+            
+            <motion.h2 
+              variants={animations.slideIn}
+              className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight"
+            >
               Connect with Top Vedic Experts
-            </h2>
-            <p className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto">
+            </motion.h2>
+            
+            <motion.p 
+              variants={animations.fadeIn}
+              className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto"
+            >
               Our handpicked astrologers with proven expertise and thousands of satisfied clients
-            </p>
+            </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={animations.staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12"
+          >
             {astrologers.map((astrologer, index) => (
-              <AstrologerCard key={astrologer.name} astrologer={astrologer} index={index} />
+              <motion.div
+                key={astrologer.name}
+                variants={animations.scaleIn}
+                custom={index}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
+                <AstrologerCard astrologer={astrologer} index={index} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-32 md:py-40 bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF]">
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <section className="relative py-32 md:py-40 bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-orange-500/10 to-transparent rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
+        </div>
+
+        <div className="relative max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            variants={animations.staggerContainer}
             className="text-center space-y-6 mb-24"
           >
-            <Badge className="bg-purple-100 text-purple-600 hover:bg-purple-100 px-6 py-2 text-sm tracking-wide rounded-full">
-              Our Services
-            </Badge>
-            <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight">
+            <motion.div variants={animations.fadeIn}>
+              <Badge className="bg-purple-100/80 backdrop-blur-sm text-purple-600 hover:bg-purple-100 px-6 py-2.5 text-sm tracking-wide rounded-full inline-flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                Our Services
+              </Badge>
+            </motion.div>
+
+            <motion.h2 
+              variants={animations.slideIn}
+              className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight relative"
+            >
               Comprehensive Astrological Solutions
-            </h2>
-            <p className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto">
+              <motion.span
+                className="absolute -bottom-2 left-1/2 w-1/3 h-1 bg-gradient-to-r from-purple-600 to-[#FF7E1D] rounded-full transform -translate-x-1/2"
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileInView={{ scaleX: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              />
+            </motion.h2>
+
+            <motion.p 
+              variants={animations.fadeIn}
+              className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto"
+            >
               Discover ancient wisdom for modern life guidance
-            </p>
+            </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={animations.staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12"
+          >
             {features.map((feature, index) => (
-              <FeatureCard key={feature.title} feature={feature} index={index} />
+              <motion.div
+                key={feature.title}
+                variants={animations.scaleIn}
+                custom={index}
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.1)"
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <FeatureCard feature={feature} index={index} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-32 md:py-40 bg-gradient-to-br from-white via-purple-50/50 to-white">
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <section className="relative py-32 md:py-40 bg-gradient-to-br from-white via-purple-50/50 to-white overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0">
+          <motion.div 
+            className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-3xl"
+            animate={{
+              y: [0, 20, 0],
+              rotate: [0, 5, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-orange-500/10 to-transparent rounded-full blur-3xl"
+            animate={{
+              y: [0, -20, 0],
+              rotate: [0, -5, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            variants={animations.staggerContainer}
             className="text-center space-y-6 mb-24"
           >
-            <Badge className="bg-purple-100 text-purple-600 hover:bg-purple-100 px-6 py-2 text-sm tracking-wide rounded-full">
-              Testimonials
-            </Badge>
-            <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight">
+            <motion.div variants={animations.fadeIn}>
+              <Badge className="bg-purple-100/80 backdrop-blur-sm text-purple-600 hover:bg-purple-100 px-6 py-2.5 text-sm tracking-wide rounded-full inline-flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                Testimonials
+              </Badge>
+            </motion.div>
+
+            <motion.h2 
+              variants={animations.slideIn}
+              className="text-4xl md:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent tracking-tight relative"
+            >
               What Our Clients Say
-            </h2>
-            <p className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto">Real experiences from our valued clients</p>
+              <motion.span
+                className="absolute -bottom-2 left-1/2 w-1/3 h-1 bg-gradient-to-r from-purple-600 to-[#FF7E1D] rounded-full transform -translate-x-1/2"
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileInView={{ scaleX: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              />
+            </motion.h2>
+
+            <motion.p 
+              variants={animations.fadeIn}
+              className="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Real experiences from our valued clients
+            </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-12">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={animations.staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-12"
+          >
             {testimonials.map((testimonial, index) => (
-              <TestimonialCard key={testimonial.name} testimonial={testimonial} index={index} />
+              <motion.div
+                key={testimonial.name}
+                variants={animations.scaleIn}
+                custom={index}
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.1)"
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <TestimonialCard testimonial={testimonial} index={index} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -288,7 +524,7 @@ export default function Home() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            variants={animations.fadeIn}
             className="text-center text-white space-y-8"
           >
             <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight">Begin Your Spiritual Journey Today</h2>
