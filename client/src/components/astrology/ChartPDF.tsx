@@ -227,7 +227,7 @@ const PDFDocument = ({ data }: ChartPDFProps) => {
             <Text style={styles.title}>Birth Chart Wheel</Text>
             <Image 
               style={styles.chartImage} 
-              src={{ uri: data.chartImage, method: 'GET', headers: {} }}
+              src={{ uri: data.chartImage, method: 'GET', headers: {}, body: '' }}
               cache={true}
             />
           </View>
@@ -357,7 +357,7 @@ export function ChartPDF({ data }: ChartPDFProps) {
           }
         }}
       >
-        {({ loading }) => (
+        {({ loading }: { loading: boolean }) => (
           <Button 
             className="w-full bg-[#FF7E1D] hover:bg-[#FF7E1D]/90"
             disabled={loading}

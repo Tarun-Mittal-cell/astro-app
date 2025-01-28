@@ -40,7 +40,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow pt-20 md:pt-24">
           <Router />
         </main>
         <Footer />

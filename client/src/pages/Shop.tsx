@@ -21,7 +21,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     id: 1,
     name: "Crystal Healing Set",
-    price: 2999,
+    price: "2999",
     description: "A complete set of healing crystals including Amethyst, Rose Quartz, Clear Quartz, and Black Tourmaline. Perfect for chakra balancing and energy healing.",
     category: "Crystal Sets",
     imageUrl: "crystal-set",
@@ -31,7 +31,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     id: 2,
     name: "Panchmukhi Rudraksha Mala",
-    price: 5999,
+    price: "5999",
     description: "Sacred 108-bead Rudraksha mala, traditionally blessed and energetically purified. Ideal for spiritual practices and meditation.",
     category: "Rudraksha Malas",
     imageUrl: "mala",
@@ -41,7 +41,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     id: 3,
     name: "Mystic Tarot Deck",
-    price: 1999,
+    price: "1999",
     description: "Premium tarot deck with gold-foil embellishments, featuring stunning artwork and a comprehensive guidebook for readings.",
     category: "Tarot Decks",
     imageUrl: "tarot",
@@ -51,7 +51,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     id: 4,
     name: "Healing Crystals Collection",
-    price: 3499,
+    price: "3499",
     description: "Curated collection of rare healing crystals including Moldavite, Celestite, and Labradorite. Each crystal is ethically sourced.",
     category: "Healing Crystals",
     imageUrl: "crystals",
@@ -61,7 +61,7 @@ const SAMPLE_PRODUCTS: Product[] = [
   {
     id: 5,
     name: "Sacred Geometry Crystal Grid",
-    price: 4299,
+    price: "4299",
     description: "Handcrafted crystal grid with sacred geometry patterns, perfect for amplifying crystal energy and meditation practices.",
     category: "Crystal Sets",
     imageUrl: "grid",

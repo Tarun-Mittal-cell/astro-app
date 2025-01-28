@@ -17,7 +17,7 @@ export function PageLayout({
   className = ""
 }: PageLayoutProps) {
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] pt-24 pb-16 ${className}`}>
+    <div className={`min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] py-16 md:py-20 ${className}`}>
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

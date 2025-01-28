@@ -130,9 +130,9 @@ export default function Home() {
   return (
     <div className="overflow-hidden selection:bg-purple-200 selection:text-purple-900">
       {/* Hero Section */}
-      <section className="relative min-h-[92vh] flex items-center bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] overflow-hidden">
+      <section className="relative min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] flex items-center bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] overflow-hidden">
         <HeroBackground />
-        <div className="relative max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-32 md:py-40">
+        <div className="relative max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-16 md:py-20">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <motion.div
               className="text-left space-y-6"

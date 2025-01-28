@@ -326,23 +326,33 @@ export function registerRoutes(app: Express): Server {
             date: date,
             planets: ["Mars", "Jupiter"],
             alignmentType: "Conjunction",
-            degree: 0.5,
+            degree: "0.5",
             influence: "A powerful time for taking action and expanding horizons. This alignment brings energy and optimism.",
             startTime: new Date(date.setHours(8,0,0,0)),
             peakTime: new Date(date.setHours(12,0,0,0)),
             endTime: new Date(date.setHours(16,0,0,0)),
-            significance: 8.5
+            significance: "8.5",
+            aspectType: "conjunction",
+            energyQuality: "positive",
+            lifeSpheres: ["career", "personal growth"],
+            suggestedActions: { actions: ["Take initiative", "Start new projects"] },
+            createdAt: new Date()
           },
           {
             date: date,
             planets: ["Venus", "Saturn"],
             alignmentType: "Trine",
-            degree: 120,
+            degree: "120",
             influence: "A harmonious period for relationships and long-term commitments. Balance between pleasure and responsibility.",
             startTime: new Date(date.setHours(14,0,0,0)),
             peakTime: new Date(date.setHours(18,0,0,0)),
             endTime: new Date(date.setHours(22,0,0,0)),
-            significance: 7.2
+            significance: "7.2",
+            aspectType: "trine",
+            energyQuality: "harmonious",
+            lifeSpheres: ["relationships", "finance"],
+            suggestedActions: { actions: ["Plan long-term", "Strengthen bonds"] },
+            createdAt: new Date()
           }
         ];
 
@@ -393,7 +403,7 @@ export function registerRoutes(app: Express): Server {
             alignments: ["Mars-Jupiter conjunction", "Venus-Saturn trine"],
             influences: ["Energy and optimism", "Balance and commitment"]
           },
-          accuracy: 0.85,
+          accuracy: "0.85",
           validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Valid for 7 days
           createdAt: new Date(),
         })

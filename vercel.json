@@ -35,5 +35,8 @@
       "src": "/(.*)",
       "dest": "dist/public/$1"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:npg_grLj1DFW4Rqo@ep-black-violet-a8exfacy-pooler.eastus2.azure.neon.tech/neondb?sslmode=require"
+  }
 }

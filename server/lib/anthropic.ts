@@ -21,7 +21,7 @@ export async function generateAstrologicalResponse(userMessage: string): Promise
       system: systemPrompt,
     });
 
-    return response.content[0].text;
+    return response.content[0].text || '';
   } catch (error) {
     console.error('Error generating astrological response:', error);
     throw new Error('Failed to generate astrological response');

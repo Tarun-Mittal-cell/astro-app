@@ -87,13 +87,22 @@ export default function PlanetaryAlignment() {
     birthDate: format(selectedDate, 'PPP'),
     birthTime: format(selectedDate, 'p'),
     birthPlace: "Global View",
+    latitude: 0,
+    longitude: 0,
+    timezone: "UTC",
+    ayanamsa: "Lahiri",
     positions: PLANETS.map(planet => ({
       planet: planet.name,
       sign: planet.zodiacSign,
       degree: planet.position,
       house: planet.house,
       isRetrograde: planet.retrograde
-    }))
+    })),
+    houses: [],
+    dashas: [],
+    yogas: [],
+    generalReading: "",
+    chartImage: ""
   };
 
   return (
