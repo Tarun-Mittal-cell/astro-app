@@ -57,9 +57,9 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Serve the app on port 5001
+  // Serve the app on port 3005
   // this serves both the API and the client
-  const PORT = 5001;
+  const PORT = 3005;
   server.listen(PORT, "0.0.0.0", () => {
     log(`serving on port ${PORT}`);
   });
