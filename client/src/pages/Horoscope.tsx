@@ -7,6 +7,7 @@ import HoroscopeReading from "@/components/horoscope/HoroscopeReading";
 import HoroscopeBackground from "@/components/horoscope/HoroscopeBackground";
 import { Star, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 const ZODIAC_SIGNS = [
   { sign: "Aries", imageUrl: "https://images.unsplash.com/photo-1712615966845-62b79e9829f6", element: "Fire", date: "Mar 21 - Apr 19" },
@@ -49,23 +50,13 @@ export default function Horoscope() {
   });
 
   return (
-    <div className="min-h-screen relative">
+    <PageLayout
+      title="Daily Horoscope"
+      subtitle="Discover what the stars have aligned for you today. Select your zodiac sign below to receive personalized cosmic insights."
+      badge="Cosmic Insights"
+      className="relative"
+    >
       <HoroscopeBackground />
-      
-      <div className="relative container mx-auto px-4 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent">
-            Daily Horoscope
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover what the stars have aligned for you today. Select your zodiac sign below to receive personalized cosmic insights.
-          </p>
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -95,7 +86,6 @@ export default function Horoscope() {
             isLoading={isLoading}
           />
         )}
-      </div>
-    </div>
+    </PageLayout>
   );
 }

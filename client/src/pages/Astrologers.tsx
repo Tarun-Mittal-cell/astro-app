@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { PageLayout } from "@/components/layout/PageLayout";
 import {
   Star,
   Clock,
@@ -140,78 +141,58 @@ const astrologers = [
 
 export default function Astrologers() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF]">
-      {/* Hero Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507929632612-21c395132cdc?w=1200&auto=format&fit=crop&q=60')] bg-cover bg-center opacity-5" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <PageLayout
+      title="Connect with Expert Astrologers"
+      subtitle="Get personalized guidance from India's most experienced astrologers through live consultation"
+      badge="Expert Guidance"
+    >
+      <div className="flex flex-wrap justify-center gap-4 mb-16">
+        {[
+          "4.9+ Rated Astrologers",
+          "100% Verified Experts",
+          "Private & Confidential",
+        ].map((feature, index) => (
           <motion.div
-            className="text-center max-w-3xl mx-auto"
-            initial="initial"
-            animate="animate"
-            variants={fadeIn}
+            key={feature}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent mb-6">
-              Connect with Expert Astrologers
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Get personalized guidance from India's most experienced
-              astrologers through live consultation
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {[
-                "4.9+ Rated Astrologers",
-                "100% Verified Experts",
-                "Private & Confidential",
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md"
-                >
-                  <Medal className="w-5 h-5 text-[#FF7E1D]" />
-                  <span className="text-sm font-medium text-gray-700">
-                    {feature}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
+            <Medal className="w-5 h-5 text-[#FF7E1D]" />
+            <span className="text-sm font-medium text-gray-700">
+              {feature}
+            </span>
           </motion.div>
-        </div>
-      </section>
+        ))}
+      </div>
 
       {/* Services Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full hover:shadow-xl transition-all duration-500 bg-white/90 backdrop-blur-sm border-t-4 border-transparent hover:-translate-y-2">
-                  <CardContent className="p-8">
-                    <div
-                      className={`w-16 h-16 rounded-2xl mb-6 flex items-center justify-center bg-gradient-to-r ${service.color} text-white transform hover:scale-110 transition-transform duration-300`}
-                    >
-                      {service.icon}
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-600">{service.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+        {services.map((service, index) => (
+          <motion.div
+            key={service.title}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true }}
+          >
+            <Card className="h-full hover:shadow-xl transition-all duration-500 bg-white/90 backdrop-blur-sm border-t-4 border-transparent hover:-translate-y-2">
+              <CardContent className="p-8">
+                <div
+                  className={`w-16 h-16 rounded-2xl mb-6 flex items-center justify-center bg-gradient-to-r ${service.color} text-white transform hover:scale-110 transition-transform duration-300`}
+                >
+                  {service.icon}
+                </div>
+                <h3 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent">
+                  {service.title}
+                </h3>
+                <p className="text-gray-600">{service.description}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Astrologers Grid */}
       <section className="py-20 bg-white/50">
@@ -326,6 +307,6 @@ export default function Astrologers() {
           </div>
         </div>
       </section>
-    </div>
+    </PageLayout>
   );
 }
