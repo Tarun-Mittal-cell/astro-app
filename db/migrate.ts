@@ -9,9 +9,22 @@ const main = async () => {
   try {
     console.log("Running migrations...");
     
-    // Add your migration logic here
-    // For example:
-    // await db.execute(sql`CREATE TABLE IF NOT EXISTS ...`);
+    // Insert sample horoscopes for each zodiac sign
+    const zodiacSigns = [
+      "aries", "taurus", "gemini", "cancer", "leo", "virgo",
+      "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
+    ];
+
+    for (const sign of zodiacSigns) {
+      await db.insert(schema.horoscopes).values({
+        zodiacSign: sign,
+        dailyReading: `Today brings exciting opportunities for ${sign}. Trust your instincts and embrace new challenges. The stars align to support your personal growth and development.`,
+        date: new Date(),
+        mood: "Optimistic",
+        color: "Purple",
+        luckyNumber: Math.floor(Math.random() * 99) + 1
+      });
+    }
     
     console.log("Migrations completed successfully");
   } catch (error) {

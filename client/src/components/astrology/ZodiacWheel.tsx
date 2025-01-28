@@ -20,11 +20,9 @@ export default function ZodiacWheel() {
   const [hoveredSign, setHoveredSign] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF] py-12">
-      <div className="container mx-auto">
-        <div className="relative max-w-[520px] mx-auto">
+    <div className="relative aspect-square">
           {/* Orange circular gradient background */}
-          <div className="absolute inset-[10%] rounded-full bg-[#FFD4C0] opacity-80" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#FFD4C0] to-[#FFE4D4] opacity-90" />
 
           {/* Rotating Wheel Container */}
           <motion.div 
@@ -105,7 +103,5 @@ export default function ZodiacWheel() {
             </div>
           </motion.div>
         </div>
-      </div>
-    </div>
   );
 }

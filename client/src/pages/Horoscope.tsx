@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Star, Calendar } from "lucide-react";
 import HoroscopeAnimation from "@/components/astrology/HoroscopeAnimation";
+import ZodiacCard from "@/components/horoscope/ZodiacCard";
+import HoroscopeReading from "@/components/horoscope/HoroscopeReading";
+import HoroscopeBackground from "@/components/horoscope/HoroscopeBackground";
+import { Star, Calendar } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const ZODIAC_SIGNS = [
   { sign: "Aries", imageUrl: "https://images.unsplash.com/photo-1712615966845-62b79e9829f6", element: "Fire", date: "Mar 21 - Apr 19" },
@@ -24,13 +27,32 @@ export default function Horoscope() {
   const [selectedSign, setSelectedSign] = useState<string | null>(null);
 
   const { data: horoscope, isLoading } = useQuery({
-    queryKey: ["/api/horoscopes", selectedSign],
-    enabled: !!selectedSign
+    queryKey: ["horoscope", selectedSign?.toLowerCase()],
+    queryFn: async () => {
+      if (!selectedSign) return null;
+      try {
+        console.log('Fetching horoscope for:', selectedSign.toLowerCase());
+        const response = await fetch(`/api/horoscope/${selectedSign.toLowerCase()}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Horoscope data:', data);
+        return data;
+      } catch (error) {
+        console.error('Error fetching horoscope:', error);
+        throw error;
+      }
+    },
+    enabled: !!selectedSign,
+    retry: 1
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF5E9] via-[#FFF0F5] to-[#F8F1FF]">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen relative">
+      <HoroscopeBackground />
+      
+      <div className="relative container mx-auto px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -56,71 +78,22 @@ export default function Horoscope() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {ZODIAC_SIGNS.map((zodiac, index) => (
-            <motion.div
+            <ZodiacCard
               key={zodiac.sign}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Card 
-                className={`group cursor-pointer hover:shadow-xl transition-all duration-500 hover:-translate-y-2 bg-white/90 backdrop-blur-sm overflow-hidden
-                  ${selectedSign === zodiac.sign ? 'ring-2 ring-purple-500 ring-offset-2' : ''}`}
-                onClick={() => setSelectedSign(zodiac.sign)}
-              >
-                <CardContent className="p-6 relative">
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-600 to-[#FF7E1D] p-0.5">
-                      <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <Star className="w-8 h-8 text-[#FF7E1D]" />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2 bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent">
-                      {zodiac.sign}
-                    </h3>
-                    <div className="flex items-center justify-center gap-2 text-sm text-gray-600 mb-2">
-                      <Calendar className="w-4 h-4" />
-                      <span>{zodiac.date}</span>
-                    </div>
-                    <p className="text-sm text-gray-500">Element: {zodiac.element}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+              zodiac={zodiac}
+              isSelected={selectedSign === zodiac.sign}
+              onSelect={() => setSelectedSign(zodiac.sign)}
+              index={index}
+            />
           ))}
         </div>
+
         {selectedSign && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mt-12"
-          >
-            <Card className="bg-white/90 backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-[#FF7E1D] p-0.5">
-                    <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                      <Star className="w-6 h-6 text-[#FF7E1D]" />
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold bg-gradient-to-r from-purple-600 to-[#FF7E1D] bg-clip-text text-transparent">
-                      {selectedSign} Horoscope
-                    </h2>
-                    <p className="text-sm text-gray-600">Today's Cosmic Guidance</p>
-                  </div>
-                </div>
-                {isLoading ? (
-                  <div className="h-24 flex items-center justify-center">
-                    <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : (
-                  <p className="text-gray-700 leading-relaxed">{horoscope?.dailyReading || "Your daily horoscope will appear here..."}</p>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+          <HoroscopeReading
+            sign={selectedSign}
+            reading={horoscope}
+            isLoading={isLoading}
+          />
         )}
       </div>
     </div>

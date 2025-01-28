@@ -26,13 +26,19 @@ export function registerRoutes(app: Express): Server {
   // Horoscopes
   app.get("/api/horoscope/:sign", async (req, res) => {
     try {
+      console.log('Received horoscope request for sign:', req.params.sign);
       const sign = req.params.sign.toLowerCase();
       const validSigns = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
                          'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
       if (!validSigns.includes(sign)) {
+        console.error('Invalid zodiac sign:', sign);
         return res.status(400).json({ error: "Invalid zodiac sign" });
       }
+
+      // Get today's date at midnight for comparison
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
       // Get today's horoscope for the sign
       const result = await db.select()
@@ -41,14 +47,30 @@ export function registerRoutes(app: Express): Server {
         .orderBy(desc(horoscopes.date))
         .limit(1);
 
-      if (!result.length) {
-        // If no horoscope exists, create a sample one
+      console.log('Database query result:', result);
+
+      if (!result.length || new Date(result[0].date) < today) {
+        // If no horoscope exists or it's not from today, create a new one
+        console.log('Creating new horoscope for:', sign);
+        
+        const predictions = [
+          "The stars align in your favor today. Expect unexpected opportunities.",
+          "A powerful day for personal growth and self-discovery.",
+          "Focus on your relationships today. Communication brings clarity.",
+          "Your creative energy is at its peak. Express yourself freely.",
+          "A day of transformation and positive change awaits you.",
+          "Trust your intuition today. Your inner wisdom guides you true."
+        ];
+
+        const colors = ["Purple", "Blue", "Green", "Gold", "Red", "Silver"];
+        const moods = ["Optimistic", "Energetic", "Peaceful", "Creative", "Focused", "Inspired"];
+
         const sampleHoroscope = {
           zodiacSign: sign,
-          dailyReading: `Today brings exciting opportunities for ${sign}. Trust your instincts and embrace new challenges.`,
+          dailyReading: `${predictions[Math.floor(Math.random() * predictions.length)]} As a ${sign}, your natural ${getSignTrait(sign)} serves you well today. ${getSignAdvice(sign)}`,
           date: new Date(),
-          mood: "Optimistic",
-          color: "Purple",
+          mood: moods[Math.floor(Math.random() * moods.length)],
+          color: colors[Math.floor(Math.random() * colors.length)],
           luckyNumber: Math.floor(Math.random() * 99) + 1
         };
 
@@ -56,15 +78,56 @@ export function registerRoutes(app: Express): Server {
           .values(sampleHoroscope)
           .returning();
 
+        console.log('Created new horoscope:', inserted[0]);
         return res.json(inserted[0]);
       }
 
+      console.log('Returning existing horoscope:', result[0]);
       res.json(result[0]);
     } catch (error) {
       console.error("Error fetching horoscope:", error);
-      res.status(500).json({ error: "Failed to fetch horoscope" });
+      res.status(500).json({ 
+        error: "Failed to fetch horoscope",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
+
+  function getSignTrait(sign: string): string {
+    const traits: { [key: string]: string } = {
+      aries: "leadership",
+      taurus: "determination",
+      gemini: "adaptability",
+      cancer: "intuition",
+      leo: "confidence",
+      virgo: "precision",
+      libra: "diplomacy",
+      scorpio: "intensity",
+      sagittarius: "optimism",
+      capricorn: "ambition",
+      aquarius: "innovation",
+      pisces: "compassion"
+    };
+    return traits[sign] || "energy";
+  }
+
+  function getSignAdvice(sign: string): string {
+    const advice: { [key: string]: string } = {
+      aries: "Take the lead in new projects, but remember to listen to others.",
+      taurus: "Focus on building lasting foundations for your goals.",
+      gemini: "Your communication skills open new doors today.",
+      cancer: "Trust your emotional intelligence in decision-making.",
+      leo: "Share your creative vision with those around you.",
+      virgo: "Your attention to detail helps solve a complex problem.",
+      libra: "Seek harmony while staying true to your principles.",
+      scorpio: "Channel your passion into productive endeavors.",
+      sagittarius: "Your adventurous spirit leads to valuable discoveries.",
+      capricorn: "Stay focused on long-term goals while remaining flexible.",
+      aquarius: "Your unique perspective brings innovative solutions.",
+      pisces: "Let your artistic nature guide you to new possibilities."
+    };
+    return advice[sign] || "Stay positive and embrace the day's energy.";
+  }
 
   // Products
   app.get("/api/products", async (_req, res) => {
