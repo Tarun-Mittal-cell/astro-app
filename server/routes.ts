@@ -5,6 +5,8 @@ import { db } from "@db";
 import { astrologers, horoscopes, products, bookings, birthCharts, planetaryPositions, consultations, chatMessages, planetaryAlignments, aiPredictions, houses, aspects } from "@db/schema";
 import { eq, desc, gte, lte } from "drizzle-orm";
 import { generateAstrologicalResponse } from './lib/anthropic';
+import { ApiResponse } from './lib/apiResponse';
+import { APIError, asyncHandler } from './index';
 import {
   calculatePlanetaryPositions,
   calculateHouseCusps,
@@ -13,7 +15,8 @@ import {
   calculateDashaPeriods,
   identifyYogas,
   generateGeneralReading,
-  generateChartImage
+  generateChartImage,
+  generatePlanetaryAspects
 } from './lib/astrology';
 
 export function registerRoutes(app: Express): Server {
@@ -36,20 +39,39 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Horoscopes
-  app.get("/api/horoscope/:sign", async (req, res) => {
-    try {
-      const sign = req.params.sign.toLowerCase();
-      const validSigns = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-                         'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+  app.get("/api/horoscope/:sign", asyncHandler(async (req, res) => {
+    const sign = req.params.sign?.toLowerCase();
+    const validSigns = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+                       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
-      if (!validSigns.includes(sign)) {
-        return res.status(400).json({ 
-          status: 'error',
-          message: "Invalid zodiac sign" 
-        });
+    if (!sign) {
+      throw new APIError(400, 'Zodiac sign is required');
+    }
+
+    if (!validSigns.includes(sign)) {
+      throw new APIError(400, 'Invalid zodiac sign', {
+        providedSign: sign,
+        validSigns
+      });
+    }
+
+    try {
+      // Get today's date at midnight for caching
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Try to get cached horoscope first
+      const cachedHoroscope = await db.select()
+        .from(horoscopes)
+        .where(eq(horoscopes.zodiacSign, sign))
+        .where(gte(horoscopes.date, today))
+        .limit(1);
+
+      if (cachedHoroscope.length > 0) {
+        return ApiResponse.success(res, cachedHoroscope[0]);
       }
 
-      // Sample horoscope data (since we're having DB issues)
+      // Generate new horoscope
       const predictions = [
         "The stars align in your favor today. Expect unexpected opportunities.",
         "A powerful day for personal growth and self-discovery.",
@@ -68,22 +90,30 @@ export function registerRoutes(app: Express): Server {
         date: new Date().toISOString(),
         mood: moods[Math.floor(Math.random() * moods.length)],
         color: colors[Math.floor(Math.random() * colors.length)],
-        luckyNumber: Math.floor(Math.random() * 99) + 1
+        luckyNumber: Math.floor(Math.random() * 99) + 1,
+        aspects: await generatePlanetaryAspects(sign)
       };
 
-      res.json({
-        status: 'success',
-        data: horoscope
-      });
+      // Try to cache the horoscope
+      try {
+        await db.insert(horoscopes).values(horoscope);
+      } catch (error) {
+        console.warn('Failed to cache horoscope:', error);
+        // Continue even if caching fails
+      }
+
+      return ApiResponse.success(res, horoscope);
     } catch (error) {
-      console.error("Error generating horoscope:", error);
-      res.status(500).json({ 
-        status: 'error',
-        message: "Failed to generate horoscope",
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      if (error instanceof APIError) {
+        throw error;
+      }
+      throw new APIError(
+        500,
+        'Failed to generate horoscope',
+        process.env.NODE_ENV === 'development' ? error : undefined
+      );
     }
-  });
+  }));
 
   function getSignTrait(sign: string): string {
     const traits: { [key: string]: string } = {

@@ -149,6 +149,110 @@ export async function generateChartImage(positions: any[], houses: any[]) {
   return "data:image/svg+xml;base64,...";
 }
 
+export async function generatePlanetaryAspects(sign: string) {
+  // Get current planetary positions
+  const now = new Date();
+  const planets = [
+    'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn',
+    'Rahu', 'Ketu', 'Uranus', 'Neptune', 'Pluto'
+  ];
+
+  // Generate aspects based on the sign's ruling planet and current transits
+  const rulingPlanet = getRulingPlanet(sign);
+  const aspects = [];
+
+  for (const planet of planets) {
+    if (planet !== rulingPlanet) {
+      // Calculate aspect type based on zodiacal degrees
+      const aspectType = calculateAspectType(rulingPlanet, planet);
+      if (aspectType) {
+        aspects.push({
+          planet1: rulingPlanet,
+          planet2: planet,
+          type: aspectType.type,
+          orb: aspectType.orb,
+          influence: getAspectInfluence(aspectType.type, rulingPlanet, planet)
+        });
+      }
+    }
+  }
+
+  return aspects;
+}
+
+function getRulingPlanet(sign: string): string {
+  const rulerships = {
+    aries: 'Mars',
+    taurus: 'Venus',
+    gemini: 'Mercury',
+    cancer: 'Moon',
+    leo: 'Sun',
+    virgo: 'Mercury',
+    libra: 'Venus',
+    scorpio: 'Mars',
+    sagittarius: 'Jupiter',
+    capricorn: 'Saturn',
+    aquarius: 'Saturn',
+    pisces: 'Jupiter'
+  };
+  return rulerships[sign as keyof typeof rulerships];
+}
+
+function calculateAspectType(planet1: string, planet2: string) {
+  // Simulate aspect calculation based on current planetary positions
+  const aspects = [
+    { type: 'conjunction', angle: 0, orb: 8 },
+    { type: 'sextile', angle: 60, orb: 6 },
+    { type: 'square', angle: 90, orb: 8 },
+    { type: 'trine', angle: 120, orb: 8 },
+    { type: 'opposition', angle: 180, orb: 8 }
+  ];
+
+  // Randomly select an aspect (in production, this would be calculated from actual positions)
+  const randomAspect = aspects[Math.floor(Math.random() * aspects.length)];
+  const randomOrb = Math.random() * randomAspect.orb;
+
+  return {
+    type: randomAspect.type,
+    orb: randomOrb.toFixed(2)
+  };
+}
+
+function getAspectInfluence(aspectType: string, planet1: string, planet2: string): string {
+  const influences = {
+    conjunction: [
+      'intensifies and merges the energies',
+      'creates a powerful focus of energy',
+      'brings together different aspects of life'
+    ],
+    sextile: [
+      'creates opportunities for growth',
+      'facilitates easy flow of energy',
+      'brings helpful circumstances'
+    ],
+    square: [
+      'creates dynamic tension',
+      'forces necessary changes',
+      'highlights areas needing attention'
+    ],
+    trine: [
+      'creates harmonious flow',
+      'brings fortunate circumstances',
+      'facilitates natural expression'
+    ],
+    opposition: [
+      'creates awareness through tension',
+      'highlights relationship dynamics',
+      'brings issues to consciousness'
+    ]
+  };
+
+  const influence = influences[aspectType as keyof typeof influences];
+  return `The ${aspectType} between ${planet1} and ${planet2} ${
+    influence[Math.floor(Math.random() * influence.length)]
+  }.`;
+}
+
 function generateHouseInterpretation(houseNumber: number, sign: string, planets: any[]) {
   // This would contain actual house interpretations
   const houseThemes = {

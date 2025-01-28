@@ -3,17 +3,57 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+// Custom error class for API errors
+class APIError extends Error {
+  constructor(
+    public statusCode: number,
+    message: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+// Async handler to catch errors in async routes
+const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 const app = express();
 
-// Basic CORS headers
+// Enhanced CORS configuration
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Allow requests from development and production origins
+  const allowedOrigins = [
+    'http://localhost:3005',
+    'http://localhost:5173',
+    'https://astro-vedic.vercel.app'
+  ];
   
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
   }
+
+  // Allow credentials
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Allow specific headers and methods
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS'
+  );
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  
   next();
 });
 
